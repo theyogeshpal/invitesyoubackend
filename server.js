@@ -17,7 +17,7 @@ dotenv.config({ path: path.resolve(__dirname, '..', 'frontend', '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/invites you';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/invitesyou';
 
 // Middleware
 app.use(cors());
