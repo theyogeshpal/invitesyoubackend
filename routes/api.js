@@ -70,7 +70,18 @@ router.get('/templates', async (req, res) => {
             filter.status = req.query.status;
         }
         const templates = await Template.find(filter).sort({ createdAt: -1 });
-        res.json(templates);
+        // Auto-sanitize any legacy broken Unsplash URLs
+        const sanitized = templates.map(t => {
+            const doc = t.toObject ? t.toObject() : { ...t };
+            if (doc.imageFront && doc.imageFront.includes('photo-1543883665-27a36c646b5a')) {
+                doc.imageFront = 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80';
+            }
+            if (doc.imageBack && doc.imageBack.includes('photo-1530103862676-de8892bc952f')) {
+                doc.imageBack = 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80';
+            }
+            return doc;
+        });
+        res.json(sanitized);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -300,6 +311,20 @@ export const DEFAULT_TEMPLATES = [
 ];
 
 export async function seedInitialData() {
+    try {
+        // Fix any legacy broken image URLs in existing database records
+        await Template.updateMany(
+            { imageFront: { $regex: 'photo-1543883665-27a36c646b5a' } },
+            { $set: { imageFront: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80' } }
+        );
+        await Template.updateMany(
+            { imageBack: { $regex: 'photo-1530103862676-de8892bc952f' } },
+            { $set: { imageBack: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80' } }
+        );
+    } catch (e) {
+        console.warn('DB image migration check:', e.message);
+    }
+
     const count = await Template.countDocuments();
     if (count === 0) {
         await Template.insertMany(DEFAULT_TEMPLATES);
