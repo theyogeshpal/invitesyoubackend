@@ -17,7 +17,7 @@ dotenv.config({ path: path.resolve(__dirname, '..', 'frontend', '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/typwrite';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/invites you';
 
 // Middleware
 app.use(cors());
@@ -31,7 +31,7 @@ app.get(['/api/config', '/assets/js/env.js', '/frontend/assets/js/env.js'], (req
         API_URL: process.env.VITE_API_URL || process.env.API_URL || 'http://localhost:5000/api',
         WHATSAPP_NUMBER: process.env.VITE_WHATSAPP_NUMBER || process.env.WHATSAPP_NUMBER || '917817095043',
         WHATSAPP_DISPLAY: process.env.VITE_WHATSAPP_DISPLAY || process.env.WHATSAPP_DISPLAY || '+91 7817095043',
-        SITE_URL: process.env.VITE_SITE_URL || process.env.SITE_URL || 'https://typwrite.in',
+        SITE_URL: process.env.VITE_SITE_URL || process.env.SITE_URL || 'https://invitesyou.in',
         IMAGEKIT_URL: process.env.VITE_IMAGEKIT_URL || process.env.IMAGEKIT_URL_ENDPOINT || 'https://ik.imagekit.io/typ1309'
     };
 
@@ -55,7 +55,7 @@ app.use(express.static(frontendPath));
 app.use('/api', apiRoutes);
 
 app.get('/', (req, res) => {
-    res.json({ message: 'Typwrite Digital Invitation Cards API is running...', status: 'OK' });
+    res.json({ message: 'Invites You Digital Invitation Cards API is running...', status: 'OK' });
 });
 
 // Connect to MongoDB and start server
